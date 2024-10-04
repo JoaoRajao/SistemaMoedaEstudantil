@@ -10,3 +10,11 @@ Distribuição de Moedas: Professores podem enviar moedas para os alunos, acompa
 Consulta de Saldo e Extrato: Alunos e professores podem consultar o saldo atual e o histórico de transações.
 Troca de Moedas: Alunos podem trocar suas moedas por vantagens, que são gerenciadas pelas empresas parceiras.
 Cadastro de Vantagens: Empresas parceiras podem cadastrar vantagens no sistema, como descontos em produtos ou serviços.
+
+Contribuidores
+Este projeto foi desenvolvido pelos seguintes alunos:
+
+Carlos Roberto Alves de Almeida Júnior
+Davi Martins Rosa Mendes Gentil
+Joao Vitor Pedersoli Rajao
+Otavio

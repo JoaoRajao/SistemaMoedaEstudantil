@@ -17,4 +17,4 @@ Este projeto foi desenvolvido pelos seguintes alunos:
 Carlos Roberto Alves de Almeida Júnior
 Davi Martins Rosa Mendes Gentil
 Joao Vitor Pedersoli Rajao
-Otavio
+Otavio Salomao Ferreira Silva

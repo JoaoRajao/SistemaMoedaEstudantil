@@ -1,0 +1,35 @@
+@startuml
+actor "Aluno" as aluno
+actor "Professor" as professor
+actor "Empresa Parceira" as empresa
+actor "Sistema" as sistema
+
+usecase "Registrar aluno" as UC1
+usecase "Consultar extrato de aluno" as UC3
+usecase "Trocar moedas por vantagens" as UC4
+
+
+usecase "Enviar moedas para aluno" as UC6
+usecase "Consultar extrato de professor" as UC7
+
+
+usecase "Cadastrar vantagem" as UC9
+usecase "Receber notificação de resgate" as UC10
+
+usecase "Adicionar moedas ao saldo do professor" as UC11
+
+aluno -- UC1
+
+aluno -- UC3
+aluno -- UC4
+
+
+professor -- UC6
+professor -- UC7
+
+
+empresa -- UC9
+empresa -- UC10
+
+sistema -- UC11
+@enduml

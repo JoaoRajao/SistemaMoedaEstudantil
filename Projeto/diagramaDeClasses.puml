@@ -1,0 +1,82 @@
+@startuml
+
+class Usuario {
+  +login: String
+  +senha: String
+  +autenticar(): void
+}
+
+class Aluno {
+  +nome: String
+  +email: String
+  +CPF: String
+  +RG: String
+  +endereco: String
+  +instituicao: Instituicao
+  +curso: String
+  +saldoMoedas: int
+  +consultarExtrato(): void
+  +trocarMoedasPorVantagens(vantagem: Vantagem): void
+  +receberMoedas(quantidade: int, professor: Professor): void
+}
+
+class Professor {
+  +nome: String
+  +CPF: String
+  +departamento: String
+  +instituicao: Instituicao
+  +saldoMoedas: int
+  +enviarMoedas(aluno: Aluno, quantidade: int, motivo: String): void
+  +consultarExtrato(): void
+}
+
+class EmpresaParceira {
+  +nomeEmpresa: String
+  +dadosContato: String
+  +cadastrarVantagem(vantagem: Vantagem): void
+  +receberNotificacaoDeResgate(codigoResgate: CodigoResgate): void
+}
+
+class Instituicao {
+  +nome: String
+  +adicionarProfessor(professor: Professor): void
+}
+
+class Moeda {
+  +quantidade: int
+}
+
+class Vantagem {
+  +descricao: String
+  +fotoProduto: Image
+  +custoMoedas: int
+  +empresaOferecedora: EmpresaParceira
+  +resgatarVantagem(aluno: Aluno): void
+}
+
+class Transacao {
+  +data: Date
+  +tipo: String
+  +quantidadeMoedas: int
+  +registrarTransacao(): void
+}
+
+class CodigoResgate {
+  +codigo: String
+  +gerarCodigo(): String
+}
+
+Usuario <|-- Aluno
+Usuario <|-- Professor
+Usuario <|-- EmpresaParceira
+
+Instituicao "1" --o "*" Professor
+Aluno "*" --o "*" Transacao
+Professor "*" --o "*" Transacao
+Aluno "*" --o "*" CodigoResgate
+EmpresaParceira "*" --o "*" CodigoResgate
+Vantagem "1" --o "*" CodigoResgate
+EmpresaParceira "1" --o "*" Vantagem
+Aluno "*" --o "*" Vantagem
+
+@enduml

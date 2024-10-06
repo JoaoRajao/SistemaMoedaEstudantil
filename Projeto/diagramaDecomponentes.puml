@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+
+'
+package "Navegador Web" as navegador
+package "Spring Boot" as spring {
+    
+    package "Controller" as controller {
+        [AlunoController] 
+        [ProfessorController] 
+        [EmpresaController] 
+        [VantagemController]
+    }
+    
+    package "Service" as service {
+        [AlunoService]
+        [ProfessorService]
+        [EmpresaService]
+        [VantagemService]
+        [TransacaoService]
+        [CodigoResgateService]
+    }
+    
+    package "Repository" as repository {
+        [AlunoRepository] 
+        [ProfessorRepository] 
+        [EmpresaRepository] 
+        [VantagemRepository]
+        [TransacaoRepository]
+        [CodigoResgateRepository]
+    }
+}
+
+database "Banco de Dados" as banco_dados
+
+' Conexões entre os componentes
+navegador --> controller : HTTP/HTTPS
+controller --> service 
+service --> repository 
+repository --> banco_dados : TCP/IP
+
+@enduml

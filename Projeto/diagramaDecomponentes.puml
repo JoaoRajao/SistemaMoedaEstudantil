@@ -33,7 +33,7 @@ package "Spring Boot" as spring {
 
 database "Banco de Dados" as banco_dados
 
-' Conexões entre os componentes
+'
 navegador --> controller : HTTP/HTTPS
 controller --> service 
 service --> repository 

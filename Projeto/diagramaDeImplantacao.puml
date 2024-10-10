@@ -1,11 +1,13 @@
 @startuml
 left to right direction
 
-node "Navegador Web" as navegador
+node "Navegador Web" as navegador {
+    [Browser]
+}
 
 node "Servidor Spring Boot" as spring {
     
-    node "Controller" as controller {
+    component "Controller" as controller {
         [AlunoController]
         [ProfessorController]
         [EmpresaController]
@@ -14,7 +16,7 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateController]
     }
     
-    node "Service" as service {
+    component "Service" as service {
         [AlunoService]
         [ProfessorService]
         [EmpresaService]
@@ -23,7 +25,7 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateService]
     }
     
-    node "Repository" as repository {
+    component "Repository" as repository {
         [AlunoRepository] 
         [ProfessorRepository] 
         [EmpresaRepository] 
@@ -33,8 +35,11 @@ node "Servidor Spring Boot" as spring {
     }
 }
 
-database "Banco de Dados" as banco_dados
+node "Banco de Dados" as banco_dados {
+    [MySQL Database]
+}
 
+' Conexões entre os nós e componentes
 navegador --> controller : HTTP/HTTPS
 controller --> service 
 service --> repository 

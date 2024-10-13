@@ -51,7 +51,7 @@ class Vantagem {
   +fotoProduto: Image
   +custoMoedas: int
   +empresaOferecedora: EmpresaParceira
-  +resgatarVantagem(aluno: Aluno): void
+  +resgatarVantagem(aluno: Aluno): CodigoResgate
 }
 
 class Transacao {
@@ -63,7 +63,7 @@ class Transacao {
 
 class CodigoResgate {
   +codigo: String
-  +gerarCodigo(): String
+  +dataExpiracao: Date
 }
 
 Usuario <|-- Aluno
@@ -71,12 +71,16 @@ Usuario <|-- Professor
 Usuario <|-- EmpresaParceira
 
 Instituicao "1" --o "*" Professor
+Instituicao "1" --o "*" Aluno
+
 Aluno "*" --o "*" Transacao
 Professor "*" --o "*" Transacao
-Aluno "*" --o "*" CodigoResgate
-EmpresaParceira "*" --o "*" CodigoResgate
-Vantagem "1" --o "*" CodigoResgate
+
+Aluno "1" -- "0..*" CodigoResgate
+EmpresaParceira "1" -- "0..*" CodigoResgate
+Vantagem "1" -- "0..*" CodigoResgate
+
 EmpresaParceira "1" --o "*" Vantagem
-Aluno "*" --o "*" Vantagem
+Aluno "*" -- "0..*" Vantagem
 
 @enduml

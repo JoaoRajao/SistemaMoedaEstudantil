@@ -39,7 +39,7 @@ node "Banco de Dados" as banco_dados {
     [MySQL Database]
 }
 
-' Conexões entre os nós e componentes
+
 navegador --> controller : HTTP/HTTPS
 controller --> service 
 service --> repository 

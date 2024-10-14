@@ -3,9 +3,9 @@ left to right direction
 
 node "Navegador Web" as navegador
 
-node "Servidor Spring Boot" as spring {
+node "Servidor ASP.NET Core" as aspnet {
     
-    node "Controller" as controller {
+    node "Controllers" as controllers {
         [AlunoController]
         [ProfessorController]
         [EmpresaController]
@@ -14,7 +14,7 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateController]
     }
     
-    node "Service" as service {
+    node "Services" as services {
         [AlunoService]
         [ProfessorService]
         [EmpresaService]
@@ -23,21 +23,25 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateService]
     }
     
-    node "Repository" as repository {
-        [AlunoRepository] 
-        [ProfessorRepository] 
-        [EmpresaRepository] 
-        [VantagemRepository]
-        [TransacaoRepository]
-        [CodigoResgateRepository]
+    node "Data Context" as context {
+        [MeritSystemContext]
+    }
+
+    node "Entities" as entities {
+        [Aluno]
+        [Professor]
+        [Empresa]
+        [Vantagem]
+        [Transacao]
+        [CodigoResgate]
     }
 }
 
 database "Banco de Dados" as banco_dados
 
-navegador --> controller : HTTP/HTTPS
-controller --> service 
-service --> repository 
-repository --> banco_dados : TCP/IP
+navegador --> controllers : HTTP/HTTPS
+controllers --> services 
+services --> context : DbSets (via MeritSystemContext)
+context --> banco_dados : TCP/IP
 
 @enduml

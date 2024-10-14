@@ -1,13 +1,13 @@
 @startuml
 left to right direction
 
-node "Navegador Web" as navegador {
-    [Browser]
+package "Navegador Web" as navegador {
+    [Cliente]
 }
 
-node "Servidor Spring Boot" as spring {
+package "Servidor ASP.NET Core" as aspnet {
     
-    component "Controller" as controller {
+    package "Controllers" as controllers {
         [AlunoController]
         [ProfessorController]
         [EmpresaController]
@@ -16,7 +16,7 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateController]
     }
     
-    component "Service" as service {
+    package "Services" as services {
         [AlunoService]
         [ProfessorService]
         [EmpresaService]
@@ -25,24 +25,18 @@ node "Servidor Spring Boot" as spring {
         [CodigoResgateService]
     }
     
-    component "Repository" as repository {
-        [AlunoRepository] 
-        [ProfessorRepository] 
-        [EmpresaRepository] 
-        [VantagemRepository]
-        [TransacaoRepository]
-        [CodigoResgateRepository]
+    package "Data Context" as context {
+        [MeritSystemContext]
     }
 }
 
-node "Banco de Dados" as banco_dados {
-    [MySQL Database]
+package "Banco de Dados" as banco_dados {
+    [Database]
 }
 
-
-navegador --> controller : HTTP/HTTPS
-controller --> service 
-service --> repository 
-repository --> banco_dados : TCP/IP
+navegador --> controllers : HTTP/HTTPS
+controllers --> services 
+services --> context : DbSets (via MeritSystemContext)
+context --> banco_dados : TCP/IP
 
 @enduml

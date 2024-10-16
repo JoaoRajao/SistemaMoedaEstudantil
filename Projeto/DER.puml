@@ -1,0 +1,88 @@
+@startuml
+
+entity Usuario {
+  *login : String
+  *senha : String
+}
+
+entity Aluno {
+  *id : int
+  *nome : String
+  *email : String
+  *CPF : String
+  *RG : String
+  *endereco : String
+  *instituicao_id : int
+  *curso : String
+  *saldoMoedas : int
+}
+
+entity Professor {
+  *id : int
+  *nome : String
+  *CPF : String
+  *departamento : String
+  *instituicao_id : int
+  *saldoMoedas : int
+}
+
+entity EmpresaParceira {
+  *id : int
+  *nomeEmpresa : String
+  *dadosContato : String
+}
+
+entity Instituicao {
+  *id : int
+  *nome : String
+}
+
+entity Moeda {
+  *id : int
+  *quantidade : int
+}
+
+entity Vantagem {
+  *id : int
+  *descricao : String
+  *fotoProduto : Image
+  *custoMoedas : int
+  *empresa_id : int
+}
+
+entity Transacao {
+  *id : int
+  *data : Date
+  *tipo : String
+  *quantidadeMoedas : int
+  *aluno_id : int
+  *professor_id : int
+}
+
+entity CodigoResgate {
+  *id : int
+  *codigo : String
+  *dataExpiracao : Date
+  *aluno_id : int
+  *empresa_id : int
+  *vantagem_id : int
+}
+
+' Relacionamentos
+Usuario ||--|{ Aluno : "1"
+Usuario ||--|{ Professor : "1"
+Usuario ||--|{ EmpresaParceira : "1"
+
+Instituicao ||--o{ Professor : "1"
+Instituicao ||--o{ Aluno : "1"
+
+Aluno ||--o{ Transacao : "0..*"
+Professor ||--o{ Transacao : "0..*"
+
+Aluno ||--o{ CodigoResgate : "0..*"
+EmpresaParceira ||--o{ CodigoResgate : "0..*"
+Vantagem ||--o{ CodigoResgate : "0..*"
+
+EmpresaParceira ||--o{ Vantagem : "0..*"
+
+@enduml

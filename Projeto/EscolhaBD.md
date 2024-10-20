@@ -17,7 +17,7 @@ public class MeritSystemContext : DbContext
 
     public MeritSystemContext(DbContextOptions<MeritSystemContext> options) : base(options) { }
 }
-
+```
 Essa classe simplifica o acesso ao banco de dados, centralizando as operações de consulta e manipulação de dados por meio dos `DbSet`s, o que permite aplicar consultas LINQ diretamente nas entidades.
 
 ## Métodos de Serviço (Service)

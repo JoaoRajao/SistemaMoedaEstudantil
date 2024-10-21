@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aplicação de estilos globais */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa;
+  /* Branco suave */
+  color: #212529;
+  /* Preto neutro */
+}
+
+/* Exemplo de ajustes de classes personalizadas */
+@layer base {
+  :root {
+    --sidebar-background: #ffffff;
+    --sidebar-foreground: #212529;
+    --sidebar-primary: #000000;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e9ecef;
+    --sidebar-accent-foreground: #212529;
+    --sidebar-border: #dee2e6;
+    --sidebar-ring: #495057;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

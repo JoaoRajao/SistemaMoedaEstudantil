@@ -11,10 +11,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="min-h-screen flex items-center justify-center">
-        <Provider store={store}>
-          <div className="w-full max-w-lg p-4">{children}</div>
-        </Provider>
+      <body className="min-h-screen">
+        <Provider store={store}>{children}</Provider>
       </body>
     </html>
   );

@@ -1,4 +1,3 @@
-// src/redux/slices/empresasSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getEmpresas,
@@ -36,7 +35,19 @@ export const fetchEmpresas = createAsyncThunk(
   }
 );
 
-// Slice de empresas
+// Thunk para deletar empresa
+export const deleteEmpresaThunk = createAsyncThunk(
+  "empresas/deleteEmpresa",
+  async (id: number, thunkAPI) => {
+    try {
+      await deleteEmpresa(id);
+      return id;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const empresasSlice = createSlice({
   name: "empresas",
   initialState,
@@ -58,6 +69,11 @@ const empresasSlice = createSlice({
       .addCase(fetchEmpresas.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(deleteEmpresaThunk.fulfilled, (state, action) => {
+        state.empresas = state.empresas.filter(
+          (empresa) => empresa.id !== action.payload
+        );
       });
   },
 });

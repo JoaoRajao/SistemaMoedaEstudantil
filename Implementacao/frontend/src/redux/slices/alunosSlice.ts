@@ -1,4 +1,3 @@
-// src/redux/slices/alunosSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getAlunos,
@@ -36,20 +35,19 @@ export const fetchAlunos = createAsyncThunk(
   }
 );
 
-// Thunk para criar novo aluno
-export const createAluno = createAsyncThunk(
-  "alunos/createAluno",
-  async (aluno: { nome: string; email: string; curso: string }, thunkAPI) => {
+// Thunk para deletar aluno
+export const deleteAlunoThunk = createAsyncThunk(
+  "alunos/deleteAluno",
+  async (id: number, thunkAPI) => {
     try {
-      const response = await addAluno(aluno);
-      return response;
+      await deleteAluno(id);
+      return id;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
-// Slice de alunos
 const alunosSlice = createSlice({
   name: "alunos",
   initialState,
@@ -72,8 +70,10 @@ const alunosSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(createAluno.fulfilled, (state, action) => {
-        state.alunos.push(action.payload);
+      .addCase(deleteAlunoThunk.fulfilled, (state, action) => {
+        state.alunos = state.alunos.filter(
+          (aluno) => aluno.id !== action.payload
+        );
       });
   },
 });

@@ -21,7 +21,7 @@ export default async function EmpresaDetalhes({ params }: Props) {
         <h1 className="text-3xl font-bold text-center">Detalhes da Empresa</h1>
         <div className="mt-4">
           <p>ID: {empresa.id}</p>
-          <p>Nome: {empresa.nome}</p>
+          <p>Nome: {empresa.nomeEmpresa}</p>
           <p>Contato: {empresa.contato}</p>
         </div>
         <Link href="/empresas">

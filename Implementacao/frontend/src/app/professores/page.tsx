@@ -1,39 +1,39 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getEmpresas, deleteEmpresa } from "@/services/empresasService";
+import { getProfessores, deleteProfessor } from "@/services/professoresService";
 import { Table } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-// Define o tipo Empresa
-interface Empresa {
+// Define o tipo Professor
+interface Professor {
   id: number;
-  nomeEmpresa: string;
-  contato: string;
+  nome: string;
+  email: string;
 }
 
-export default function EmpresasPage() {
+export default function ProfessoresPage() {
   const router = useRouter();
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [professores, setProfessores] = useState<Professor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchEmpresas() {
-      const data = await getEmpresas();
-      setEmpresas(data);
+    async function fetchProfessores() {
+      const data = await getProfessores();
+      setProfessores(data);
       setLoading(false);
     }
 
-    fetchEmpresas();
+    fetchProfessores();
   }, []);
 
   const handleDelete = async (id: number) => {
-    if (confirm("Tem certeza que deseja excluir esta empresa?")) {
-      await deleteEmpresa(id);
-      setEmpresas((prevEmpresas) =>
-        prevEmpresas.filter((empresa) => empresa.id !== id)
+    if (confirm("Tem certeza que deseja excluir este professor?")) {
+      await deleteProfessor(id);
+      setProfessores((prevProfessores) =>
+        prevProfessores.filter((professor) => professor.id !== id)
       );
     }
   };
@@ -43,40 +43,40 @@ export default function EmpresasPage() {
       <div className="px-4 max-w-4xl mx-auto mt-8">
         <div className="border border-gray-300 rounded-lg shadow-md p-6">
           <h1 className="text-3xl font-semibold text-center mb-6">
-            Gerenciamento de Empresas
+            Gerenciamento de Professores
           </h1>
 
           {loading ? (
-            <p>Carregando empresas...</p>
+            <p>Carregando professores...</p>
           ) : (
             <Table className="w-full border-separate border-spacing-y-2">
               <thead>
                 <tr className="text-center text-lg font-medium">
                   <th className="pb-2 px-4">ID</th>
                   <th className="pb-2 px-4">Nome</th>
-                  <th className="pb-2 px-4">Contato</th>
+                  <th className="pb-2 px-4">Email</th>
                   <th className="pb-2 px-4">Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {empresas.map((empresa) => (
-                  <tr key={empresa.id} className="border-b text-center">
-                    <td className="px-4 text-sm">{empresa.id}</td>
-                    <td className="px-4 text-sm">{empresa.nomeEmpresa}</td>
-                    <td className="px-4 text-sm">{empresa.contato}</td>
+                {professores.map((professor) => (
+                  <tr key={professor.id} className="border-b text-center">
+                    <td className="px-4 text-sm">{professor.id}</td>
+                    <td className="px-4 text-sm">{professor.nome}</td>
+                    <td className="px-4 text-sm">{professor.email}</td>
                     <td className="flex justify-center space-x-2 py-2">
-                      <Link href={`/empresas/${empresa.id}`}>
+                      <Link href={`/professores/${professor.id}`}>
                         <Button className="bg-black text-white text-xs px-3 py-1">
                           Detalhes
                         </Button>
                       </Link>
-                      <Link href={`/empresas/${empresa.id}/edit`}>
+                      <Link href={`/professores/${professor.id}/edit`}>
                         <Button className="bg-black text-white text-xs px-3 py-1">
                           Editar
                         </Button>
                       </Link>
                       <Button
-                        onClick={() => handleDelete(empresa.id)}
+                        onClick={() => handleDelete(professor.id)}
                         className="bg-black text-white text-xs px-3 py-1"
                       >
                         Excluir
@@ -89,9 +89,9 @@ export default function EmpresasPage() {
           )}
 
           <div className="flex justify-center mt-4">
-            <Link href="/empresas/novo">
+            <Link href="/professores/novo">
               <Button className="bg-black text-white px-6 py-2">
-                Adicionar Empresa
+                Adicionar Professor
               </Button>
             </Link>
           </div>

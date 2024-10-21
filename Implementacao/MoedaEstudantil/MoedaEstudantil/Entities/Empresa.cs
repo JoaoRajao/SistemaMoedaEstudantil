@@ -1,4 +1,6 @@
-﻿namespace MoedaEstudantil.Entities
+﻿using MoedaEstudantil.DTOs;
+
+namespace MoedaEstudantil.Entities
 {
     public class Empresa : Pessoa
     {
@@ -7,18 +9,21 @@
         public Empresa()
         {
             VantagensOferecidas = new List<Vantagem>();
+            Id = Guid.NewGuid();
         }
 
-        public void CadastrarVantagem(string descricao, decimal custo, string foto)
+        public static Empresa FromDto(EmpresaDTO empresa)
         {
-            var vantagem = new Vantagem
+            return new Empresa
             {
-                Descricao = descricao,
-                Custo = custo,
-                Foto = foto
+                Id = Guid.NewGuid(),
+                Nome = empresa.Nome,
+                Documento = empresa.Documento,
+                Email = empresa.Email,
+                Senha = empresa.Senha,
+                VantagensOferecidas = [],
+                SaldoMoedas = 0
             };
-
-            VantagensOferecidas.Add(vantagem);
         }
     }
 

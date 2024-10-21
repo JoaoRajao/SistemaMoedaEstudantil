@@ -1,4 +1,5 @@
 ﻿using MoedaEstudantil.Data;
+using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Entities;
 
 namespace MoedaEstudantil.Services
@@ -12,25 +13,27 @@ namespace MoedaEstudantil.Services
             _context = context;
         }
 
-        public Empresa CadastrarEmpresa(Empresa empresa)
+        public Empresa CadastrarEmpresa(EmpresaDTO empresa)
         {
-            _context.Empresas.Add(empresa);
+            var empresaCadastrada = Empresa.FromDto(empresa);
+
+            _context.Empresas.Add(empresaCadastrada);
             _context.SaveChanges();
-            return empresa;
+            return empresaCadastrada;
         }
 
-        public Empresa ObterEmpresa(int id)
+        public Empresa ObterEmpresa(Guid id)
         {
             return _context.Empresas.Find(id);
         }
 
-        public Empresa AtualizarEmpresa(int id, Empresa empresaAtualizada)
+        public Empresa AtualizarEmpresa(Guid id, Empresa empresaAtualizada)
         {
             var empresa = _context.Empresas.Find(id);
             if (empresa == null) return null;
 
             empresa.Nome = empresaAtualizada.Nome;
-            empresa.CPF = empresaAtualizada.CPF;
+            empresa.Documento = empresaAtualizada.Documento;
             empresa.Email = empresaAtualizada.Email;
             empresa.Senha = empresaAtualizada.Senha;
 
@@ -38,7 +41,7 @@ namespace MoedaEstudantil.Services
             return empresa;
         }
 
-        public bool DeletarEmpresa(int id)
+        public bool DeletarEmpresa(Guid id)
         {
             var empresa = _context.Empresas.Find(id);
             if (empresa == null) return false;

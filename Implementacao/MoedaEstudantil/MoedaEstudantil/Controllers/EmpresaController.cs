@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Entities;
 using MoedaEstudantil.Services;
 
@@ -23,7 +24,7 @@ namespace MoedaEstudantil.Controllers
         [HttpPost("cadastro")]
         [ProducesResponseType(typeof(Empresa), 200)]
         [ProducesResponseType(400)]
-        public IActionResult CadastrarEmpresa([FromBody] Empresa empresa)
+        public IActionResult CadastrarEmpresa([FromBody] EmpresaDTO empresa)
         {
             if (empresa == null) return BadRequest("Dados inválidos.");
 
@@ -39,7 +40,7 @@ namespace MoedaEstudantil.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Empresa), 200)]
         [ProducesResponseType(404)]
-        public IActionResult ObterEmpresa(int id)
+        public IActionResult ObterEmpresa(Guid id)
         {
             var empresa = _empresaService.ObterEmpresa(id);
             if (empresa == null) return NotFound("Empresa não encontrada.");
@@ -56,7 +57,7 @@ namespace MoedaEstudantil.Controllers
         [ProducesResponseType(typeof(Empresa), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
-        public IActionResult AtualizarEmpresa(int id, [FromBody] Empresa empresaAtualizada)
+        public IActionResult AtualizarEmpresa(Guid id, [FromBody] Empresa empresaAtualizada)
         {
             if (empresaAtualizada == null) return BadRequest("Dados inválidos.");
 
@@ -74,7 +75,7 @@ namespace MoedaEstudantil.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public IActionResult DeletarEmpresa(int id)
+        public IActionResult DeletarEmpresa(Guid id)
         {
             var sucesso = _empresaService.DeletarEmpresa(id);
             if (!sucesso) return NotFound("Empresa não encontrada.");

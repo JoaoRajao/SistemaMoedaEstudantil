@@ -5,36 +5,43 @@ import Link from "next/link";
 
 // Esta função será chamada no lado do servidor (Server Component)
 export default async function AlunosPage() {
-  console.log(process.env.NEXT_PUBLIC_API_URL);
   const alunos = await getAlunos();
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold">Gerenciamento de Alunos</h1>
-      <Table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {alunos.map((aluno: { id: number; nome: string; email: string }) => (
-            <tr key={aluno.id}>
-              <td>{aluno.id}</td>
-              <td>{aluno.nome}</td>
-              <td>{aluno.email}</td>
-              <td>
-                <Link href={`/alunos/${aluno.id}`}>
-                  <Button>Ver Detalhes</Button>
-                </Link>
-              </td>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <div>
+        <h1 className="text-3xl font-bold text-center">
+          Gerenciamento de Alunos
+        </h1>
+        <Table className="mt-6 w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {alunos.map(
+              (aluno: { id: number; nome: string; email: string }) => (
+                <tr key={aluno.id}>
+                  <td>{aluno.id}</td>
+                  <td>{aluno.nome}</td>
+                  <td>{aluno.email}</td>
+                  <td>
+                    <Link href={`/alunos/${aluno.id}`}>
+                      <Button className="bg-black text-white">
+                        Ver Detalhes
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

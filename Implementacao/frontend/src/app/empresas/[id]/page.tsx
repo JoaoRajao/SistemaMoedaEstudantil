@@ -12,20 +12,22 @@ export default async function EmpresaDetalhes({ params }: Props) {
   const empresa = await getEmpresaById(Number(params.id));
 
   if (!empresa) {
-    return <div>Empresa não encontrada</div>;
+    return <div className="text-center">Empresa não encontrada</div>;
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold">Detalhes da Empresa</h1>
-      <div className="mt-4">
-        <p>ID: {empresa.id}</p>
-        <p>Nome: {empresa.nome}</p>
-        <p>Contato: {empresa.contato}</p>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <div>
+        <h1 className="text-3xl font-bold text-center">Detalhes da Empresa</h1>
+        <div className="mt-4">
+          <p>ID: {empresa.id}</p>
+          <p>Nome: {empresa.nome}</p>
+          <p>Contato: {empresa.contato}</p>
+        </div>
+        <Link href="/empresas">
+          <Button className="bg-black text-white mt-4">Voltar</Button>
+        </Link>
       </div>
-      <Link href="/empresas">
-        <Button>Voltar</Button>
-      </Link>
     </div>
   );
 }

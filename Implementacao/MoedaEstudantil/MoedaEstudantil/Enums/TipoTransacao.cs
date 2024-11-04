@@ -3,7 +3,6 @@
     public enum TipoTransacao
     {
         ENVIO,
-        RESGATE,
-        TROCA
+        RESGATE
     }
 }

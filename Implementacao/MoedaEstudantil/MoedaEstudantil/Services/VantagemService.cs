@@ -29,31 +29,6 @@ namespace MoedaEstudantil.Services
                 .FirstOrDefault(v => v.Id == id);
         }
 
-        public bool AtualizarVantagem(Vantagem atualizado)
-        {
-            var vantagem = _context.Vantagens.Find(atualizado.Id);
-            if (vantagem == null)
-                return false;
-
-            // Atualizar propriedades
-            vantagem.Descricao = atualizado.Descricao;
-            vantagem.Custo = atualizado.Custo;
-
-            _context.SaveChanges();
-            return true;
-        }
-
-        public bool DeletarVantagem(Guid id)
-        {
-            var vantagem = _context.Vantagens.Find(id);
-            if (vantagem == null)
-                return false;
-
-            _context.Vantagens.Remove(vantagem);
-            _context.SaveChanges();
-            return true;
-        }
-
         public List<Vantagem> ListarVantagens()
         {
             return _context.Vantagens.Include(v => v.EmpresaId).ToList();

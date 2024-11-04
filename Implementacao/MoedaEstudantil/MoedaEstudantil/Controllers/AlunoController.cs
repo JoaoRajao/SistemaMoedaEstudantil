@@ -133,9 +133,9 @@ namespace MoedaEstudantil.Controllers
         [HttpPost("{id}/trocar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> TrocarMoedas(Guid id, [FromBody] TrocaMoedas model)
+        public async Task<IActionResult> TrocarMoedas([FromBody] TrocaMoedas model)
         {
-            var sucesso = await _alunoService.TrocarMoedas(id, model.VantagemId);
+            var sucesso = await _alunoService.TrocarMoedas(model);
             if (!sucesso)
                 return BadRequest("Erro ao trocar moedas.");
 

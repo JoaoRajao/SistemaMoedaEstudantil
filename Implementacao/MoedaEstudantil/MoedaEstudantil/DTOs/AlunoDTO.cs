@@ -2,8 +2,8 @@
 {
     public class AlunoDTO : PessoaDTO
     {
-        public string Endereco { get; set; }
-        public string InstituicaoEnsino { get; set; }
-        public string Curso { get; set; }
+        public required string Endereco { get; set; }
+        public required string InstituicaoEnsino { get; set; }
+        public required string Curso { get; set; }
     }
 }

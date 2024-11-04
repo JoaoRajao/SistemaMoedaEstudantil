@@ -10,19 +10,19 @@ namespace MoedaEstudantil.Entities
 
         [Required]
         [StringLength(100)]
-        public string Nome { get; set; }
+        public required string Nome { get; set; }
 
         [Required]
         [StringLength(11)]
         ///RG ou CPF
-        public string Documento { get; set; }
+        public required string Documento { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
-        public string Senha { get; set; }
+        public required string Senha { get; set; }
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal SaldoMoedas { get; set; }

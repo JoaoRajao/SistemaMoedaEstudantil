@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Entities;
 using MoedaEstudantil.Services;
 
@@ -7,7 +8,6 @@ namespace MoedaEstudantil.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Professor")]
     public class ProfessorController : ControllerBase
     {
         private readonly ProfessorService _professorService;
@@ -24,7 +24,7 @@ namespace MoedaEstudantil.Controllers
         [HttpPost("cadastro")]
         [ProducesResponseType(typeof(Professor), 200)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CadastrarProfessor([FromBody] Professor professor)
+        public IActionResult CadastrarProfessor([FromBody] ProfessorDTO professor)
         {
             if (professor == null) return BadRequest("Dados inválidos.");
 
@@ -64,12 +64,9 @@ namespace MoedaEstudantil.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult AtualizarProfessor(Guid id, [FromBody] Professor atualizado)
+        public IActionResult AtualizarProfessor(Guid id, [FromBody] ProfessorDTO atualizado)
         {
-            if (id != atualizado.Id)
-                return BadRequest("ID inválido.");
-
-            var resultado = _professorService.AtualizarProfessor(atualizado);
+           var resultado = _professorService.AtualizarProfessor(atualizado, id);
             if (!resultado)
                 return NotFound("Professor não encontrado.");
 

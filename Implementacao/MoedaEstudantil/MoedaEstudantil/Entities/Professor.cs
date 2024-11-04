@@ -1,4 +1,5 @@
-﻿using MoedaEstudantil.Enums;
+﻿using MoedaEstudantil.DTOs;
+using MoedaEstudantil.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,22 +9,31 @@ namespace MoedaEstudantil.Entities
     {
         [Required]
         [StringLength(100)]
-        public string Departamento { get; set; }
+        public required string Departamento { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Instituicao { get; set; }
-
-        [Required]
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal SaldoMoedas { get; set; }
-
+        public required string Instituicao { get; set; }
+               
         public List<Transacao> Transacoes { get; set; }
 
         public Professor()
         {
             Transacoes = new List<Transacao>();
-            SaldoMoedas = 1000; // Inicia com 1000 moedas por semestre
+            SaldoMoedas = 1000;
+        }
+
+        public static Professor FromDto(ProfessorDTO professorDTO)
+        {
+            return new Professor
+            {
+                Nome = professorDTO.Nome,
+                Email = professorDTO.Email,
+                Departamento = professorDTO.Departamento,
+                Instituicao = professorDTO.Instituicao,
+                Documento = professorDTO.Documento,
+                Senha = professorDTO.Senha
+            };
         }
     }
 

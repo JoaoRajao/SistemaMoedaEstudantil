@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MoedaEstudantil.Data;
+using MoedaEstudantil.Interfaces.Services;
 using MoedaEstudantil.Models;
 using MoedaEstudantil.Services;
 
@@ -33,6 +34,7 @@ public class Startup
         services.AddScoped<EmpresaService>();
         services.AddScoped<ProfessorService>();
         services.AddScoped<VantagemService>();
+        services.AddScoped<IPessoaService, PessoaService>();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();

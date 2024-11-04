@@ -9,20 +9,20 @@ namespace MoedaEstudantil.Entities
         [Key]
         public Guid Id { get; set; }
 
+        [Required]
+        [StringLength(100)]
+        public Guid Nome { get; set; }
+
         [ForeignKey("Empresa")]
         public Guid EmpresaId { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Descricao { get; set; }
-
-        [Required]
-        [StringLength(100)]
-        public string Foto { get; set; }
+        public required string Descricao { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal Custo { get; set; }
+        public required decimal Custo { get; set; }
 
         public static Vantagem FromDTO(VantagemDTO dto)
         {
@@ -31,8 +31,7 @@ namespace MoedaEstudantil.Entities
                 Id = Guid.NewGuid(),
                 EmpresaId = dto.EmpresaID,
                 Descricao = dto.Descricao,
-                Custo = dto.Custo,
-                Foto = dto.Foto
+                Custo = dto.Custo
             };
         }
     }

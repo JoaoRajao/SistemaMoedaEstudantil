@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace MoedaEstudantil.Services
 {
@@ -33,6 +32,7 @@ namespace MoedaEstudantil.Services
 
             using (var client = new SmtpClient(_smtpHost, _smtpPort))
             {
+                client.UseDefaultCredentials = false;
                 client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
                 client.EnableSsl = true;
 

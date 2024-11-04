@@ -2,9 +2,9 @@
 {
     public class VantagemDTO
     {
-        public string Descricao { get; set; }
-        public Guid EmpresaID { get; set; }
-        public decimal Custo { get; set; }
-        public string Foto { get; set; }
+        public required string Descricao { get; set; }
+        public required Guid EmpresaID { get; set; }
+        public required decimal Custo { get; set; }
+        public required string Foto { get; set; }
     }
 }

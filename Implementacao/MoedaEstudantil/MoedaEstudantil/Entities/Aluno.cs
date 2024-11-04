@@ -10,25 +10,23 @@ namespace MoedaEstudantil.Entities
     {
         [Required]
         [StringLength(100)]
-        public string Endereco { get; set; }
+        public required string Endereco { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string InstituicaoEnsino { get; set; }
+        public required string InstituicaoEnsino { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Curso { get; set; }
+        public required string Curso { get; set; }
 
         public List<Transacao> Transacoes { get; set; }
 
-        // Construtor padrão exigido pelo EF Core, Sem parametros
         public Aluno()
         {
             Transacoes = new List<Transacao>();
         }
 
-        // Método para converter DTO para entidade
         public static Aluno FromDto(AlunoDTO alunoDto)
         {
             return new Aluno

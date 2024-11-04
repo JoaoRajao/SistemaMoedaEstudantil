@@ -57,48 +57,17 @@ namespace MoedaEstudantil.Controllers
             return Ok(vantagem);
         }
 
-        /// <summary>
-        /// Atualiza uma vantagem existente.
-        /// </summary>
-        /// <param name="id">ID da vantagem a ser atualizada.</param>
-        /// <param name="atualizado">Dados atualizados da vantagem.</param>
-        /// <returns>Confirmação de atualização da vantagem.</returns>
-        /// <response code="204">Se a atualização foi realizada com sucesso.</response>
-        /// <response code="400">Se houve erro no ID ou dados inválidos.</response>
-        /// <response code="404">Se a vantagem não foi encontrada.</response>
-        [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [HttpGet]
+        [ProducesResponseType(typeof(List<Vantagem>), 200)]
         [ProducesResponseType(404)]
-        public IActionResult AtualizarVantagem(Guid id, [FromBody] Vantagem atualizado)
+        public IActionResult GetAll()
         {
-            if (id != atualizado.Id)
-                return BadRequest("IDs não correspondem.");
+            var vantagem = _vantagemService.ListarVantagens();
 
-            var resultado = _vantagemService.AtualizarVantagem(atualizado);
-            if (!resultado)
+            if (vantagem == null)
                 return NotFound("Vantagem não encontrada.");
 
-            return NoContent();
-        }
-
-        /// <summary>
-        /// Deleta uma vantagem pelo ID.
-        /// </summary>
-        /// <param name="id">ID da vantagem a ser deletada.</param>
-        /// <returns>Confirmação de exclusão da vantagem.</returns>
-        /// <response code="204">Se a exclusão foi realizada com sucesso.</response>
-        /// <response code="404">Se a vantagem não foi encontrada.</response>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public IActionResult DeletarVantagem(Guid id)
-        {
-            var resultado = _vantagemService.DeletarVantagem(id);
-            if (!resultado)
-                return NotFound("Vantagem não encontrada.");
-
-            return NoContent();
+            return Ok(vantagem);
         }
     }
 }

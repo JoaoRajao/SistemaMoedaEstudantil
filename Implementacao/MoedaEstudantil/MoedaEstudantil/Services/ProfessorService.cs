@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoedaEstudantil.Data;
+using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Entities;
 using MoedaEstudantil.Enums;
 
@@ -16,8 +17,10 @@ namespace MoedaEstudantil.Services
             _emailService = emailService;
         }
 
-        public Professor CadastrarProfessor(Professor professor)
+        public Professor CadastrarProfessor(ProfessorDTO professorDTO)
         {
+            var professor = Professor.FromDto(professorDTO);
+
             _context.Professores.Add(professor);
             _context.SaveChanges();
             return professor;
@@ -27,12 +30,12 @@ namespace MoedaEstudantil.Services
         {
             return _context.Professores
                 .Include(p => p.Instituicao)
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id) ?? throw new Exception("Nao foi encontrado nenhum professor com este ID");
         }
 
-        public bool AtualizarProfessor(Professor atualizado)
+        public bool AtualizarProfessor(ProfessorDTO atualizado, Guid id)
         {
-            var professor = _context.Professores.Find(atualizado.Id);
+            var professor = _context.Professores.Find(id);
             if (professor == null)
                 return false;
 
@@ -54,37 +57,6 @@ namespace MoedaEstudantil.Services
             _context.Professores.Remove(professor);
             _context.SaveChanges();
             return true;
-        }
-
-        public async Task<bool> DistribuirMoedas(Guid professorId, Guid alunoId, int quantidade, string motivo)
-        {
-            var professor = _context.Professores.Find(professorId);
-            var aluno = _context.Alunos.Find(alunoId);
-
-            if (professor == null || aluno == null || professor.SaldoMoedas < quantidade)
-                return false;
-
-            // Criar transação
-            var transacao = new Transacao
-            {
-                ProfessorId = professorId,
-                AlunoId = alunoId,
-                Valor = quantidade,
-                TipoTransacao = TipoTransacao.ENVIO,
-                Mensagem = motivo,
-                Data = DateTime.Now
-            };
-
-            _context.Transacoes.Add(transacao);
-            professor.SaldoMoedas -= quantidade;
-            aluno.SaldoMoedas += quantidade;
-            await _context.SaveChangesAsync();
-
-            // Enviar email para o aluno
-            var mensagem = $"<p>Você recebeu {quantidade} moedas do professor {professor.Nome}.</p><p>Motivo: {motivo}</p>";
-            await _emailService.EnviarEmailAsync(aluno.Email, "Você recebeu moedas!", mensagem);
-
-            return true;
-        }
+        }        
     }
 }

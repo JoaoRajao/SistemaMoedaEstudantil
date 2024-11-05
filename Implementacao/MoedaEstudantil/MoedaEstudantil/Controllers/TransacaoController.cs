@@ -3,6 +3,7 @@ using MoedaEstudantil.Services;
 using MoedaEstudantil.Entities;
 using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Models;
+using MoedaEstudantil.Interfaces.Services;
 
 namespace MoedaEstudantil.Controllers
 {
@@ -11,9 +12,9 @@ namespace MoedaEstudantil.Controllers
     public class TransacaoController : ControllerBase
     {
         private readonly AlunoService _alunoService;
-        private readonly PessoaService _pessoaService;
+        private readonly IPessoaService _pessoaService;
 
-        public TransacaoController(AlunoService alunoService, PessoaService pessoaService)
+        public TransacaoController(AlunoService alunoService, IPessoaService pessoaService)
         {
             _alunoService = alunoService;
             _pessoaService = pessoaService;

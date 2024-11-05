@@ -1,33 +1,46 @@
-import { getEmpresaById } from "@/services/empresasService";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+"use client";
 
-interface Props {
-  params: {
-    id: string;
-  };
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import EmpresaCard from "../../../components/cards/EmpresaCard";
+import { fetchData } from "../../../services/apiService";
+
+interface Empresa {
+  id: string;
+  nome: string;
+  cnpj: string;
+  endereco: string;
+  setor: string;
 }
 
-export default async function EmpresaDetalhes({ params }: Props) {
-  const empresa = await getEmpresaById(Number(params.id));
+export default function DetalhesEmpresa() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [empresa, setEmpresa] = useState<Empresa | null>(null);
 
-  if (!empresa) {
-    return <div className="text-center">Empresa não encontrada</div>;
-  }
+  useEffect(() => {
+    async function loadEmpresa() {
+      try {
+        const data = await fetchData(`/empresas/${id}`);
+        setEmpresa(data);
+      } catch (error) {
+        console.error("Erro ao buscar detalhes da empresa:", error);
+      }
+    }
+    if (id) loadEmpresa();
+  }, [id]);
+
+  if (!empresa) return <p>Carregando...</p>;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div>
-        <h1 className="text-3xl font-bold text-center">Detalhes da Empresa</h1>
-        <div className="mt-4">
-          <p>ID: {empresa.id}</p>
-          <p>Nome: {empresa.nomeEmpresa}</p>
-          <p>Contato: {empresa.contato}</p>
-        </div>
-        <Link href="/empresas">
-          <Button className="bg-black text-white mt-4">Voltar</Button>
-        </Link>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Detalhes da Empresa</h1>
+      <EmpresaCard
+        name={empresa.nome}
+        cnpj={empresa.cnpj}
+        address={empresa.endereco}
+        sector={empresa.setor}
+      />
     </div>
   );
 }

@@ -1,35 +1,44 @@
-import { getProfessorById } from "@/services/professoresService";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+"use client";
 
-interface Props {
-  params: {
-    id: string;
-  };
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import ProfessorCard from "../../../components/cards/ProfessorCard";
+import { fetchData } from "../../../services/apiService";
+
+interface Professor {
+  id: string;
+  nome: string;
+  disciplina: string;
+  instituicao: string;
 }
 
-export default async function ProfessorDetalhes({ params }: Props) {
-  const professor = await getProfessorById(Number(params.id));
+export default function DetalhesProfessor() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [professor, setProfessor] = useState<Professor | null>(null);
 
-  if (!professor) {
-    return <div className="text-center">Professor não encontrado</div>;
-  }
+  useEffect(() => {
+    async function loadProfessor() {
+      try {
+        const data = await fetchData(`/Professor/${id}`);
+        setProfessor(data);
+      } catch (error) {
+        console.error("Erro ao buscar detalhes do professor:", error);
+      }
+    }
+    if (id) loadProfessor();
+  }, [id]);
+
+  if (!professor) return <p>Carregando...</p>;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div>
-        <h1 className="text-3xl font-bold text-center">
-          Detalhes do Professor
-        </h1>
-        <div className="mt-4">
-          <p>ID: {professor.id}</p>
-          <p>Nome: {professor.nome}</p>
-          <p>Email: {professor.email}</p>
-        </div>
-        <Link href="/professores">
-          <Button className="bg-black text-white mt-4">Voltar</Button>
-        </Link>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Detalhes do Professor</h1>
+      <ProfessorCard
+        name={professor.nome}
+        discipline={professor.disciplina}
+        institution={professor.instituicao}
+      />
     </div>
   );
 }

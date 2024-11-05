@@ -1,102 +1,108 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getProfessores, deleteProfessor } from "@/services/professoresService";
-import { Table } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import DataTable from "../../components/tables/DataTable";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { fetchData } from "../../services/apiService";
 
-// Define o tipo Professor
 interface Professor {
-  id: number;
+  id: string;
   nome: string;
-  email: string;
+  disciplina: string;
+  instituicao: string;
+  cpf: string;
+  rg: string;
+  endereco: string;
+  salario: string;
 }
 
-export default function ProfessoresPage() {
-  const router = useRouter();
+export default function ProfessoresList() {
   const [professores, setProfessores] = useState<Professor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedProfessor, setSelectedProfessor] = useState<Professor | null>(
+    null
+  );
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const headers = ["Nome", "Disciplina", "Instituição", "Ações"];
 
   useEffect(() => {
-    async function fetchProfessores() {
-      const data = await getProfessores();
-      setProfessores(data);
-      setLoading(false);
-    }
-
-    fetchProfessores();
+    loadProfessores();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (confirm("Tem certeza que deseja excluir este professor?")) {
-      await deleteProfessor(id);
-      setProfessores((prevProfessores) =>
-        prevProfessores.filter((professor) => professor.id !== id)
-      );
+  const loadProfessores = async () => {
+    try {
+      const data = await fetchData("/Professor/todos");
+      setProfessores(data);
+    } catch (error) {
+      console.error("Erro ao buscar professores:", error);
+      setErrorMessage("Erro ao carregar a lista de professores.");
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      if (selectedProfessor) {
+        await fetchData(`/Professor/${selectedProfessor.id}`, {
+          method: "DELETE",
+        });
+        alert("Professor excluído com sucesso!");
+        setShowDeleteModal(false);
+        loadProfessores();
+      }
+    } catch (error) {
+      console.error("Erro ao excluir professor:", error);
+      setErrorMessage("Erro ao excluir professor.");
+    }
+  };
+
+  const rows = professores.map((professor) => [
+    professor.nome,
+    professor.disciplina,
+    professor.instituicao,
+    <div className="flex space-x-2" key={professor.id}>
+      <Link
+        href={`/professores/${professor.id}`}
+        className="text-blue-500 hover:underline"
+      >
+        Detalhes
+      </Link>
+      <Link
+        href={`/professores/${professor.id}/editar`}
+        className="text-yellow-500 hover:underline"
+      >
+        Editar
+      </Link>
+      <button
+        onClick={() => {
+          setSelectedProfessor(professor);
+          setShowDeleteModal(true);
+        }}
+        className="text-red-500 hover:underline"
+      >
+        Excluir
+      </button>
+    </div>,
+  ]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="px-4 max-w-4xl mx-auto mt-8">
-        <div className="border border-gray-300 rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-semibold text-center mb-6">
-            Gerenciamento de Professores
-          </h1>
-
-          {loading ? (
-            <p>Carregando professores...</p>
-          ) : (
-            <Table className="w-full border-separate border-spacing-y-2">
-              <thead>
-                <tr className="text-center text-lg font-medium">
-                  <th className="pb-2 px-4">ID</th>
-                  <th className="pb-2 px-4">Nome</th>
-                  <th className="pb-2 px-4">Email</th>
-                  <th className="pb-2 px-4">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {professores.map((professor) => (
-                  <tr key={professor.id} className="border-b text-center">
-                    <td className="px-4 text-sm">{professor.id}</td>
-                    <td className="px-4 text-sm">{professor.nome}</td>
-                    <td className="px-4 text-sm">{professor.email}</td>
-                    <td className="flex justify-center space-x-2 py-2">
-                      <Link href={`/professores/${professor.id}`}>
-                        <Button className="bg-black text-white text-xs px-3 py-1">
-                          Detalhes
-                        </Button>
-                      </Link>
-                      <Link href={`/professores/${professor.id}/edit`}>
-                        <Button className="bg-black text-white text-xs px-3 py-1">
-                          Editar
-                        </Button>
-                      </Link>
-                      <Button
-                        onClick={() => handleDelete(professor.id)}
-                        className="bg-black text-white text-xs px-3 py-1"
-                      >
-                        Excluir
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-
-          <div className="flex justify-center mt-4">
-            <Link href="/professores/novo">
-              <Button className="bg-black text-white px-6 py-2">
-                Adicionar Professor
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Lista de Professores</h1>
+      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+      <Link
+        href="/professores/cadastro"
+        className="text-blue-600 hover:underline mb-4 inline-block"
+      >
+        Novo Professor
+      </Link>
+      <DataTable headers={headers} rows={rows} />
+      {showDeleteModal && (
+        <ConfirmationModal
+          message="Tem certeza de que deseja excluir este professor?"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -50,6 +50,14 @@ namespace MoedaEstudantil.Controllers
 
             return Ok(professor);
         }
+        [HttpGet("todos")]
+        [ProducesResponseType(typeof(Professor), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAll()
+        {
+            var professores = _professorService.GetAll();
+            return Ok(professores);
+        }
 
         /// <summary>
         /// Atualizar dados de um professor.
@@ -66,7 +74,7 @@ namespace MoedaEstudantil.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult AtualizarProfessor(Guid id, [FromBody] ProfessorDTO atualizado)
         {
-           var resultado = _professorService.AtualizarProfessor(atualizado, id);
+            var resultado = _professorService.AtualizarProfessor(atualizado, id);
             if (!resultado)
                 return NotFound("Professor não encontrado.");
 

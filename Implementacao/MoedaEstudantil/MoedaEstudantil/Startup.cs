@@ -20,6 +20,19 @@ public class Startup
         services.AddDbContext<MeritSystemContext>(options =>
             options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
 
+        // Configuração do CORS para permitir requisições do frontend
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000") // URL do seu frontend
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+        });
+
         // Registra as configurações de Email
         services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
@@ -52,6 +65,11 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+
+        // Middleware de CORS
+        app.UseCors("AllowAllOrigins");
+        app.UseCors(build => build.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {

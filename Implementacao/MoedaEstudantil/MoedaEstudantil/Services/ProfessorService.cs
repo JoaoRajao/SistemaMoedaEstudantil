@@ -33,6 +33,11 @@ namespace MoedaEstudantil.Services
                 .FirstOrDefault(p => p.Id == id) ?? throw new Exception("Nao foi encontrado nenhum professor com este ID");
         }
 
+        public List<Professor> GetAll()
+        {
+            return _context.Professores.ToList();
+        }
+
         public bool AtualizarProfessor(ProfessorDTO atualizado, Guid id)
         {
             var professor = _context.Professores.Find(id);
@@ -57,6 +62,6 @@ namespace MoedaEstudantil.Services
             _context.Professores.Remove(professor);
             _context.SaveChanges();
             return true;
-        }        
+        }
     }
 }

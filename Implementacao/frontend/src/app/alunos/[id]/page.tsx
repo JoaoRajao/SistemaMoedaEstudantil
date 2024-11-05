@@ -1,66 +1,44 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getAlunoById } from "@/services/alunosService";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import AlunoCard from "../../../components/cards/AlunoCard";
+import { fetchData } from "../../../services/apiService";
 
-interface Props {
-  params: {
-    id: string;
-  };
+interface Aluno {
+  id: string;
+  nome: string;
+  curso: string;
+  instituicao: string;
 }
 
-export default function AlunoDetalhes({ params }: Props) {
-  const [aluno, setAluno] = useState<{
-    id: number;
-    nome: string;
-    email: string;
-    curso: string;
-  } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+export default function DetalhesAluno() {
   const router = useRouter();
+  const { id } = router.query;
+  const [aluno, setAluno] = useState<Aluno | null>(null);
 
   useEffect(() => {
-    async function fetchAluno() {
+    async function loadAluno() {
       try {
-        const alunoData = await getAlunoById(Number(params.id));
-        if (alunoData) {
-          setAluno(alunoData);
-        } else {
-          setError("Aluno não encontrado");
-        }
-      } catch (err) {
-        setError("Erro ao buscar os dados do aluno");
+        const data = await fetchData(`/Aluno/${id}`);
+        setAluno(data);
+      } catch (error) {
+        console.error("Erro ao buscar detalhes do aluno:", error);
       }
     }
+    if (id) loadAluno();
+  }, [id]);
 
-    fetchAluno();
-  }, [params.id]);
-
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
-  }
-
-  if (!aluno) {
-    return <div className="text-center">Carregando...</div>;
-  }
+  if (!aluno) return <p>Carregando...</p>;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div>
-        <h1 className="text-3xl font-bold text-center">Detalhes do Aluno</h1>
-        <div className="mt-4">
-          <p>ID: {aluno.id}</p>
-          <p>Nome: {aluno.nome}</p>
-          <p>Email: {aluno.email}</p>
-          <p>Curso: {aluno.curso}</p>
-        </div>
-        <Link href="/alunos">
-          <Button className="bg-black text-white mt-4">Voltar</Button>
-        </Link>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Detalhes do Aluno</h1>
+      <AlunoCard
+        name={aluno.nome}
+        course={aluno.curso}
+        institution={aluno.instituicao}
+      />
     </div>
   );
 }

@@ -1,100 +1,106 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getAlunos, deleteAluno } from "@/services/alunosService";
-import { Table } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import DataTable from "../../components/tables/DataTable";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import { fetchData } from "../../services/apiService";
 
-// Define o tipo Aluno
 interface Aluno {
-  id: number;
+  id: string;
   nome: string;
-  email: string;
+  curso: string;
+  instituicao: string;
+  cpf: string;
+  rg: string;
+  endereco: string;
+  rendimento: string;
 }
 
-export default function AlunosPage() {
-  const router = useRouter();
+export default function AlunosList() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedAluno, setSelectedAluno] = useState<Aluno | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const headers = ["Nome", "Curso", "Instituição", "Ações"];
 
   useEffect(() => {
-    async function fetchAlunos() {
-      const data = await getAlunos();
-      setAlunos(data);
-      setLoading(false); // Certifica que os dados foram carregados
-    }
-
-    fetchAlunos();
+    loadAlunos();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (confirm("Tem certeza que deseja excluir este aluno?")) {
-      await deleteAluno(id);
-      setAlunos((prevAlunos) => prevAlunos.filter((aluno) => aluno.id !== id));
+  const loadAlunos = async () => {
+    try {
+      const data = await fetchData("/Aluno/todos");
+      setAlunos(data);
+    } catch (error) {
+      console.error("Erro ao buscar alunos:", error);
+      setErrorMessage("Erro ao carregar a lista de alunos.");
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      if (selectedAluno) {
+        await fetchData(`/Aluno/${selectedAluno.id}`, {
+          method: "DELETE",
+        });
+        alert("Aluno excluído com sucesso!");
+        setShowDeleteModal(false);
+        loadAlunos(); // Recarrega a lista de alunos
+      }
+    } catch (error) {
+      console.error("Erro ao excluir aluno:", error);
+      setErrorMessage("Erro ao excluir aluno.");
+    }
+  };
+
+  const rows = alunos.map((aluno) => [
+    aluno.nome,
+    aluno.curso,
+    aluno.instituicao,
+    <div className="flex space-x-2" key={aluno.id}>
+      <Link
+        href={`/alunos/${aluno.id}`}
+        className="text-blue-500 hover:underline"
+      >
+        Detalhes
+      </Link>
+      <Link
+        href={`/alunos/${aluno.id}/editar`}
+        className="text-yellow-500 hover:underline"
+      >
+        Editar
+      </Link>
+      <button
+        onClick={() => {
+          setSelectedAluno(aluno);
+          setShowDeleteModal(true);
+        }}
+        className="text-red-500 hover:underline"
+      >
+        Excluir
+      </button>
+    </div>,
+  ]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="px-4 max-w-4xl mx-auto mt-8">
-        <div className="border border-gray-300 rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-semibold text-center mb-6">
-            Gerenciamento de Alunos
-          </h1>
-
-          {loading ? (
-            <p>Carregando alunos...</p>
-          ) : (
-            <Table className="w-full border-separate border-spacing-y-2">
-              <thead>
-                <tr className="text-center text-lg font-medium">
-                  <th className="pb-2 px-4">ID</th>
-                  <th className="pb-2 px-4">Nome</th>
-                  <th className="pb-2 px-4">Email</th>
-                  <th className="pb-2 px-4">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {alunos.map((aluno) => (
-                  <tr key={aluno.id} className="border-b text-center">
-                    <td className="px-4 text-sm">{aluno.id}</td>
-                    <td className="px-4 text-sm">{aluno.nome}</td>
-                    <td className="px-4 text-sm">{aluno.email}</td>
-                    <td className="flex justify-center space-x-2 py-2">
-                      <Link href={`/alunos/${aluno.id}`}>
-                        <Button className="bg-black text-white text-xs px-3 py-1">
-                          Detalhes
-                        </Button>
-                      </Link>
-                      <Link href={`/alunos/${aluno.id}/edit`}>
-                        <Button className="bg-black text-white text-xs px-3 py-1">
-                          Editar
-                        </Button>
-                      </Link>
-                      <Button
-                        onClick={() => handleDelete(aluno.id)}
-                        className="bg-black text-white text-xs px-3 py-1"
-                      >
-                        Excluir
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-
-          <div className="flex justify-center mt-4">
-            <Link href="/alunos/novo">
-              <Button className="bg-black text-white px-6 py-2">
-                Adicionar Aluno
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Lista de Alunos</h1>
+      {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+      <Link
+        href="/alunos/cadastro"
+        className="text-blue-600 hover:underline mb-4 inline-block"
+      >
+        Novo Aluno
+      </Link>
+      <DataTable headers={headers} rows={rows} />
+      {showDeleteModal && (
+        <ConfirmationModal
+          message="Tem certeza de que deseja excluir este aluno?"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }

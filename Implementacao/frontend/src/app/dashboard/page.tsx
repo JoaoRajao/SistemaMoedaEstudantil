@@ -1,37 +1,34 @@
+// src/app/dashboard/page.tsx
 "use client";
 
-import React from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import DataTable from "../../components/tables/DataTable";
 
-export default function DashboardPage() {
-  const { user } = useSelector((state: { auth: { user: any } }) => state.auth);
+export default function Dashboard() {
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  if (!user) {
-    router.push("/login");
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    }
+  }, [isAuthenticated, router]);
+
+  const headers = ["Tipo", "Total"];
+  const rows = [
+    ["Alunos", "120"],
+    ["Professores", "30"],
+    ["Empresas", "10"],
+    ["Transações", "500"],
+    ["Vantagens", "15"],
+  ];
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div>
-        <h1 className="text-3xl font-bold text-center">Dashboard</h1>
-        <div className="mt-6 space-y-4">
-          <Link href="/alunos">
-            <Button className="bg-black text-white">Gerenciar Alunos</Button>
-          </Link>
-          <Link href="/empresas">
-            <Button className="bg-black text-white">Gerenciar Empresas</Button>
-          </Link>
-          <Link href="/professores">
-            <Button className="bg-black text-white">
-              Gerenciar Professores
-            </Button>
-          </Link>
-        </div>
-      </div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Resumo do Sistema</h1>
+      <DataTable headers={headers} rows={rows} />
     </div>
   );
 }

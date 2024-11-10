@@ -1,0 +1,19 @@
+@startuml Cadastro de Vantagem
+actor User as "Usuário"
+participant "VantagemController" as Controlador
+participant "Vantagem" as Entidade
+
+User -> Controlador: cadastrarVantagem(VantagemDTO)
+activate Controlador
+
+Controlador -> Entidade: criarVantagem(VantagemDTO)
+activate Entidade
+
+Entidade -> Entidade: Vantagem(Id, EmpresaId, Descricao, Custo)
+return Nova instância de Vantagem
+
+deactivate Entidade
+
+Controlador -> User: Vantagem cadastrada com sucesso
+deactivate Controlador
+@enduml

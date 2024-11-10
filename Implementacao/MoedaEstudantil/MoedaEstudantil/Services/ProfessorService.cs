@@ -62,6 +62,6 @@ namespace MoedaEstudantil.Services
             _context.Professores.Remove(professor);
             _context.SaveChanges();
             return true;
-        }
+        }        
     }
 }

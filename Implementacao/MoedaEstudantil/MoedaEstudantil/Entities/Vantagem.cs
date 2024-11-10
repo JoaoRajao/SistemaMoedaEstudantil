@@ -11,7 +11,7 @@ namespace MoedaEstudantil.Entities
 
         [Required]
         [StringLength(100)]
-        public Guid Nome { get; set; }
+        public required string Nome { get; set; }
 
         [ForeignKey("Empresa")]
         public Guid EmpresaId { get; set; }
@@ -29,6 +29,7 @@ namespace MoedaEstudantil.Entities
             return new Vantagem
             {
                 Id = Guid.NewGuid(),
+                Nome = dto.Nome,
                 EmpresaId = dto.EmpresaID,
                 Descricao = dto.Descricao,
                 Custo = dto.Custo

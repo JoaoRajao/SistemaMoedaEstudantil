@@ -6,6 +6,5 @@ namespace MoedaEstudantil.Models
     {
         public Guid VantagemId { get; set; }
         public Guid AlunoId { get; set; }
-        public TipoTransacao TipoTransacao { get; set; }
     }
 }

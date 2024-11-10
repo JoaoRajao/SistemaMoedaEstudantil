@@ -8,7 +8,6 @@ namespace MoedaEstudantil.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Empresa")]
     public class VantagemController : ControllerBase
     {
         private readonly VantagemService _vantagemService;
@@ -65,7 +64,7 @@ namespace MoedaEstudantil.Controllers
             var vantagem = _vantagemService.ListarVantagens();
 
             if (vantagem == null)
-                return NotFound("Vantagem não encontrada.");
+                return NotFound("Nenhuma vantagem cadastrada.");
 
             return Ok(vantagem);
         }

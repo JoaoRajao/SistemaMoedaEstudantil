@@ -1,0 +1,16 @@
+@startuml
+actor Aluno as aluno
+participant "AlunoController" as controller
+participant "AlunoService" as service
+participant "MeritSystemContext" as dbContext
+database "Banco de Dados" as db
+
+aluno -> controller : solicitarListagemDeVantagens()
+controller -> service : listarVantagensParaAluno()
+service -> dbContext : acessarDbSetsDeVantagens()
+dbContext -> db : executarConsultaVantagens()
+db --> dbContext : retornarDadosVantagens
+dbContext --> service : retornoDadosVantagens
+service --> controller : listaDeVantagens
+controller --> aluno : exibirListaDeVantagens
+@enduml

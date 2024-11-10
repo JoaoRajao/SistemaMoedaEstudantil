@@ -18,6 +18,7 @@ class Aluno {
   +consultarExtrato(): void
   +trocarMoedasPorVantagens(vantagem: Vantagem): void
   +receberMoedas(quantidade: int, professor: Professor): void
+  +listarVantagens(vantagem: Vantagem): void
 }
 
 class Professor {

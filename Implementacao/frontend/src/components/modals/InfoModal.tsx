@@ -1,31 +1,36 @@
-// src/components/modals/InfoModal.tsx
-interface InfoModalProps {
+import ModalContainer from "./ModalContainer";
+import { BaseModalProps, buttonVariants } from "./types";
+
+interface InfoModalProps extends BaseModalProps {
+  /** Mensagem informativa */
   message: string;
-  onClose: () => void;
+  /** Texto do botão de fechar */
+  closeText?: string;
 }
 
-export default function InfoModal({ message, onClose }: InfoModalProps) {
+export default function InfoModal({
+  title = "Informação",
+  message,
+  onClose,
+  isOpen,
+  closeText = "Fechar",
+}: InfoModalProps) {
   return (
-    <div
-      role="dialog"
-      aria-labelledby="info-modal-title"
-      aria-describedby="info-modal-description"
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300"
-    >
-      <div className="bg-gray-900 p-6 rounded shadow-lg text-white">
-        <h2 id="info-modal-title" className="sr-only">
-          Informação
-        </h2>
-        <p id="info-modal-description" className="mb-4">
-          {message}
-        </p>
-        <button
-          onClick={onClose}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200"
-        >
-          Fechar
-        </button>
+    <ModalContainer title={title} isOpen={isOpen} onClose={onClose}>
+      <div className="p-6">
+        <p className="text-gray-300 mb-6">{message}</p>
+        <div className="flex justify-end">
+          <button
+            onClick={onClose}
+            className={`
+              px-4 py-2 rounded transition-colors duration-200
+              ${buttonVariants.primary}
+            `}
+          >
+            {closeText}
+          </button>
+        </div>
       </div>
-    </div>
+    </ModalContainer>
   );
 }

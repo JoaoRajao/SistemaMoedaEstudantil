@@ -1,46 +1,45 @@
-// src/components/forms/SelectField.tsx
-interface SelectFieldProps {
-  label: string;
-  options: { value: string; label: string }[];
+interface Option {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  label: string;
+}
+
+interface SelectFieldProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label: string;
+  options: Option[];
   error?: string;
 }
 
 export default function SelectField({
   label,
   options,
-  value,
-  onChange,
   error,
+  className = "",
+  ...props
 }: SelectFieldProps) {
   return (
     <div className="mb-4">
-      <label htmlFor={label} className="block text-gray-300 mb-1">
+      <label className="block text-sm font-medium text-gray-200 mb-1">
         {label}
       </label>
       <select
-        value={value}
-        onChange={onChange}
-        aria-invalid={!!error}
-        aria-describedby={`${label}-error`}
-        className="w-full p-2 border border-gray-700 bg-gray-800 text-white rounded mt-1"
+        className={`
+          w-full px-4 py-2 bg-gray-800 border rounded-md
+          ${error ? "border-red-500" : "border-gray-600"}
+          focus:outline-none focus:ring-2 focus:ring-blue-500
+          text-white
+          ${className}
+        `}
+        {...props}
       >
+        <option value="">Selecione uma opção</option>
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            className="bg-gray-900 text-white"
-          >
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
-      {error && (
-        <p id={`${label}-error`} className="text-red-500 text-sm mt-1">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 }

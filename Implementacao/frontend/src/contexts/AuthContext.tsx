@@ -9,12 +9,18 @@ import {
 } from "react";
 import Cookies from "js-cookie";
 import {
-  login as loginService,
-  logout as logoutService,
-} from "../services/authService";
-import { isTokenExpired } from "../services/apiService";
+  loginService,
+  logoutService,
+  isTokenExpired,
+} from "../services/http-client";
 
 interface User {
+  empresaId(empresaId: any): unknown;
+  id(
+    id: any,
+    data: { alunoId: string; valor: number; motivo: string }
+  ): unknown;
+  role: string; // Adicionando a propriedade 'role' obrigatória
   name: string;
   email: string;
 }
@@ -50,7 +56,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const parseUserFromToken = (token: string): User | null => {
     try {
       const tokenData = JSON.parse(atob(token.split(".")[1]));
-      return { name: tokenData.name, email: tokenData.email };
+      return {
+        id: tokenData.id,
+        name: tokenData.name,
+        email: tokenData.email,
+        role: tokenData.role,
+        empresaId: tokenData.empresaId,
+      };
     } catch {
       return null;
     }

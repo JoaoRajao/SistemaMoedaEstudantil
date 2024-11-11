@@ -1,26 +1,51 @@
-import React from "react";
+import { BaseCardProps } from "./types";
+import Badge from "@/components/common/Badge";
+import CardContainer from "./CardContainer";
+import { formatters } from "@/utils/formatters";
 
-interface VantagemCardProps {
+/** Props do componente VantagemCard */
+interface VantagemCardProps extends BaseCardProps {
+  /** Nome da vantagem */
   nome: string;
+  /** Descrição da vantagem */
   descricao: string;
+  /** Custo em moedas */
   custo: number;
+  /** Nome da empresa */
+  empresa: string;
+  /** Status de disponibilidade */
+  disponivel: boolean;
 }
 
-const VantagemCard: React.FC<VantagemCardProps> = ({
+export default function VantagemCard({
   nome,
   descricao,
   custo,
-}) => {
+  empresa,
+  disponivel,
+  onClick,
+  className,
+}: VantagemCardProps) {
   return (
-    <div className="p-4 border rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-2">{nome}</h2>
-      <p className="mb-2">{descricao}</p>
-      <p className="text-gray-700">
-        Custo:{" "}
-        {custo.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-      </p>
-    </div>
-  );
-};
+    <CardContainer onClick={onClick} className={className}>
+      <div className="space-y-3">
+        <div className="flex justify-between items-start">
+          <h3 className="text-lg font-semibold text-white">{nome}</h3>
+          <Badge
+            text={disponivel ? "Disponível" : "Indisponível"}
+            variant={disponivel ? "success" : "info"}
+          />
+        </div>
 
-export default VantagemCard;
+        <p className="text-gray-400 text-sm line-clamp-2">{descricao}</p>
+
+        <div className="flex justify-between items-center pt-2 border-t border-gray-700">
+          <span className="text-sm text-gray-400">{empresa}</span>
+          <span className="text-lg font-bold text-white">
+            {formatters.moedas(custo)}
+          </span>
+        </div>
+      </div>
+    </CardContainer>
+  );
+}

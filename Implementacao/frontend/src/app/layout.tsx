@@ -1,8 +1,15 @@
 import "../styles/globals.css";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
+import { Metadata } from "next";
 import { AuthProvider } from "../contexts/AuthContext";
+import { LoadingProvider } from "../contexts/LoadingContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import FeedbackProvider from "../components/feedback/FeedbackProvider";
+
+export const metadata: Metadata = {
+  title: "Sistema de Moeda Estudantil",
+  description: "Plataforma de reconhecimento e recompensas acadêmicas",
+};
 
 export default function RootLayout({
   children,
@@ -11,22 +18,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-gray-900 text-white">
+      <body className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
         <AuthProvider>
-          <div className="flex min-h-screen">
-            <div className="border-r border-gray-700">
-              <Sidebar /> {/* Sidebar fixa à esquerda */}
-            </div>
-            <div className="flex-1 flex flex-col ml-64 border-l border-gray-700">
-              <Navbar /> {/* Cabeçalho */}
-              <main className="flex-1 flex items-center justify-center p-8 border-t border-gray-700">
-                {children}
-              </main>
-              <div className="border-t border-gray-700">
-                <Footer /> {/* Rodapé com borda superior */}
-              </div>
-            </div>
-          </div>
+          <LoadingProvider>
+            <FeedbackProvider>
+              <div className="flex-grow flex flex-col">{children}</div>
+              <ToastContainer
+                position="top-right"
+                autoClose={4000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+              />
+            </FeedbackProvider>
+          </LoadingProvider>
         </AuthProvider>
       </body>
     </html>

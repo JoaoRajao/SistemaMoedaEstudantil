@@ -1,19 +1,23 @@
 @startuml Cadastro de Vantagem
 actor User as "Usuário"
 participant "VantagemController" as Controlador
-participant "Vantagem" as Entidade
+participant "VantagemService" as service
+participant "MeritSystemContext" as dbContext
+database "Banco de Dados" as db
 
 User -> Controlador: cadastrarVantagem(VantagemDTO)
-activate Controlador
 
-Controlador -> Entidade: criarVantagem(VantagemDTO)
-activate Entidade
+Controlador -> service: cadastrarVantagem(vantagem)
 
-Entidade -> Entidade: Vantagem(Id, EmpresaId, Descricao, Custo)
-return Nova instância de Vantagem
+service -> dbContext: Add(vantagem)
+service -> dbContext: SaveChanges()
 
-deactivate Entidade
+dbContext -> db: executarCadastroVantagem()
+db --> dbContext: retornarDadosVantagem
 
-Controlador -> User: Vantagem cadastrada com sucesso
-deactivate Controlador
+dbContext --> service: retornarDadosVantagem
+
+service --> Controlador: retornarDadosVantagem
+
+Controlador -> User: exibirVantagemCriada
 @enduml

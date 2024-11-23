@@ -1,0 +1,39 @@
+@startuml Troca de Vantagens
+
+actor Aluno as "Usuário"
+participant "VantagemController" as Controlador
+participant "VantagemService" as Service
+participant "MeritSystemContext" as dbContext
+database "Banco de Dados" as db
+
+Aluno -> Controlador: trocarMoedasPorVantagens(vantagemID)
+
+Controlador -> Service: trocarMoedasPorVantagens(vantagemID, alunoID)
+
+Service -> dbContext: buscarSaldo(alunoID)
+dbContext -> db: buscarSaldoAluno()
+db --> dbContext: saldoMoedas
+dbContext --> Service: saldoMoedas
+
+alt Saldo suficiente
+    Service -> dbContext: atualizarSaldo(alunoID, custoVantagem)
+    dbContext -> db: executarAtualizacaoSaldo()
+    db --> dbContext: confirmacaoAtualizacao
+
+    Service -> dbContext: registrarTransacao(alunoID, vantagemID)
+    dbContext -> db: executarRegistroTransacao()
+    db --> dbContext: confirmacaoRegistro
+
+    Service -> dbContext: gerarCodigoResgate(vantagemID, alunoID)
+    dbContext -> db: executarGeracaoCodigo()
+    db --> dbContext: codigoResgate
+    dbContext --> Service: codigoResgate
+
+    Service --> Controlador: sucesso, codigoResgate
+    Controlador -> Aluno: exibirCodigoResgate(codigoResgate)
+else Saldo insuficiente
+    Service --> Controlador: erro("Saldo insuficiente")
+    Controlador -> Aluno: exibirMensagemErro("Saldo insuficiente")
+end
+
+@enduml

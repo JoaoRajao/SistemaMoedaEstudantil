@@ -55,5 +55,21 @@ namespace MoedaEstudantil.Services
         {
             return _context.Empresas.ToList();
         }
+
+        public Vantagem CadastrarVantagem(VantagemDTO vantagemDto, Guid empresaId)
+        {
+            var vantagem = Vantagem.FromDTO(vantagemDto);
+            _context.Vantagens.Add(vantagem);
+
+            var empresa = _context.Empresas.Find(empresaId);
+
+            if (empresa == null)
+                throw new Exception("Empresa não encontrada.");
+
+            empresa.VantagensOferecidas.Add(vantagem);
+
+            _context.SaveChanges();
+            return vantagem;
+        }
     }
 }

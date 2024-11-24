@@ -30,7 +30,6 @@ namespace MoedaEstudantil.Entities
             {
                 Id = Guid.NewGuid(),
                 Nome = dto.Nome,
-                EmpresaId = dto.EmpresaID,
                 Descricao = dto.Descricao,
                 Custo = dto.Custo
             };

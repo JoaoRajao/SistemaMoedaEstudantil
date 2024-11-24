@@ -46,7 +46,6 @@ public class Startup
         services.AddScoped<AlunoService>();
         services.AddScoped<EmpresaService>();
         services.AddScoped<ProfessorService>();
-        services.AddScoped<VantagemService>();
         services.AddScoped<IPessoaService, PessoaService>();
         services.AddControllers();
         services.AddEndpointsApiExplorer();

@@ -93,5 +93,48 @@ namespace MoedaEstudantil.Controllers
             var empresas = _empresaService.ObterTodasEmpresas();
             return Ok(empresas);
         }
+
+        /// <summary>
+        /// Obter todas as vantagens de uma empresa pelo ID.
+        /// </summary>
+        /// <param name="empresaId">ID da empresa.</param>
+        /// <returns>Lista de vantagens da empresa.</returns>
+        [HttpGet("{empresaId}/vantagens")]
+        [ProducesResponseType(typeof(List<Vantagem>), 200)]
+        [ProducesResponseType(404)]
+        public IActionResult ObterVantagensDaEmpresa(Guid empresaId)
+        {
+            var empresa = _empresaService.ObterEmpresa(empresaId);
+            if (empresa == null)
+                return NotFound("Empresa não encontrada.");
+
+            var vantagens = empresa.VantagensOferecidas;
+            return Ok(vantagens);
+        }
+
+        /// <summary>
+        /// Cadastrar uma nova vantagem para uma empresa.
+        /// </summary>
+        /// <param name="empresaId">ID da empresa.</param>
+        /// <param name="vantagemDto">Dados da vantagem a ser cadastrada.</param>
+        /// <returns>Retorna a vantagem criada com o status 201 (Created).</returns>
+        [HttpPost("{empresaId}/vantagens")]
+        [ProducesResponseType(typeof(Vantagem), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult CadastrarVantagemParaEmpresa(Guid empresaId, [FromBody] VantagemDTO vantagemDto)
+        {
+            var empresa = _empresaService.ObterEmpresa(empresaId);
+            if (empresa == null)
+                return NotFound("Empresa não encontrada.");
+
+            if (vantagemDto == null)
+                return BadRequest("Dados inválidos.");
+
+            var vantagemCadastrada = _empresaService.CadastrarVantagem(vantagemDto, empresaId);
+
+            return CreatedAtAction(nameof(ObterVantagensDaEmpresa), new { empresaId = empresaId }, vantagemCadastrada);
+        }
+
     }
 }

@@ -13,89 +13,72 @@ import {
 import { Button } from "@/components/ui/button";
 import { Alert } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-
-type Transacao = {
-  id: number;
-  data: string;
-  descricao: string;
-  quantidade: number;
-};
 
 type Vantagem = {
-  id: number;
+  id: string;
+  nome: string;
   descricao: string;
   custo: number;
 };
 
-const MenuAluno: React.FC = () => {
+type Empresa = {
+  id: string;
+  nome: string;
+  vantagensOferecidas: Vantagem[];
+};
+
+const MenuTroca: React.FC = () => {
   const [saldo, setSaldo] = useState<number>(0);
-  const [transacoes, setTransacoes] = useState<Transacao[]>([]);
-  const [vantagensDisponiveis, setVantagensDisponiveis] = useState<Vantagem[]>(
-    []
-  );
-  const [transacoesFiltradas, setTransacoesFiltradas] = useState<Transacao[]>(
-    []
-  );
-  const [dataInicio, setDataInicio] = useState<Date | undefined>();
-  const [dataFim, setDataFim] = useState<Date | undefined>();
+  const [alunoId, setAlunoId] = useState<string | null>(null);
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
   const [mensagemAlerta, setMensagemAlerta] = useState<string | null>(null);
   const [tipoAlerta, setTipoAlerta] = useState<"success" | "error">("success");
 
   useEffect(() => {
     const fetchDados = async () => {
       try {
-        const [saldoRes, transacoesRes, vantagensRes] = await Promise.all([
-          fetch("/api/aluno/saldo"),
-          fetch("/api/aluno/transacoes"),
-          fetch("/api/vantagens"),
+        const [alunoRes, empresasRes] = await Promise.all([
+          fetch("http://localhost:5004/api/Aluno/todos"),
+          fetch("http://localhost:5004/api/Empresa/todas"),
         ]);
 
-        if (!saldoRes.ok || !transacoesRes.ok || !vantagensRes.ok) {
+        if (!alunoRes.ok || !empresasRes.ok) {
           throw new Error("Erro ao carregar os dados.");
         }
 
-        const saldoData = await saldoRes.json();
-        const transacoesData = await transacoesRes.json();
-        const vantagensData = await vantagensRes.json();
+        const alunos = await alunoRes.json();
+        const empresasData = await empresasRes.json();
 
-        setSaldo(saldoData.saldo);
-        setTransacoes(transacoesData);
-        setTransacoesFiltradas(transacoesData);
-        setVantagensDisponiveis(vantagensData);
+        if (alunos.length === 0) {
+          throw new Error("Nenhum aluno encontrado.");
+        }
+
+        // Pegando o primeiro aluno
+        const primeiroAluno = alunos[0];
+        setAlunoId(primeiroAluno.id);
+        setSaldo(primeiroAluno.saldoMoedas);
+        setEmpresas(empresasData);
       } catch (error) {
         setTipoAlerta("error");
-        setMensagemAlerta("Erro ao carregar os dados do aluno.");
+        setMensagemAlerta("Erro ao carregar os dados. Tente novamente.");
       }
     };
 
     fetchDados();
   }, []);
 
-  const handleFiltrar = () => {
-    const filtradas = transacoes.filter((transacao) => {
-      const dataTransacao = new Date(transacao.data);
-      return (
-        (!dataInicio || dataTransacao >= dataInicio) &&
-        (!dataFim || dataTransacao <= dataFim)
-      );
-    });
-    setTransacoesFiltradas(filtradas);
-  };
+  const handleTroca = async (vantagemId: string) => {
+    if (!alunoId) {
+      setTipoAlerta("error");
+      setMensagemAlerta("Aluno não encontrado.");
+      return;
+    }
 
-  const handleTroca = async (vantagemId: number) => {
     try {
-      const res = await fetch("/api/aluno/trocar", {
+      const res = await fetch("http://localhost:5004/api/Transacao/trocar-moedas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vantagemId }),
+        body: JSON.stringify({ vantagemId, alunoId }),
       });
 
       if (!res.ok) throw new Error("Erro ao realizar a troca.");
@@ -103,8 +86,6 @@ const MenuAluno: React.FC = () => {
       const data = await res.json();
 
       setSaldo(data.novoSaldo);
-      setTransacoes(data.transacoesAtualizadas);
-      setTransacoesFiltradas(data.transacoesAtualizadas);
       setTipoAlerta("success");
       setMensagemAlerta("Troca realizada com sucesso!");
     } catch (error) {
@@ -129,122 +110,38 @@ const MenuAluno: React.FC = () => {
 
       <Separator className="my-4" />
 
-      {/* Filtros de Data */}
-      <div className="flex items-center space-x-4">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-[240px] justify-start text-left font-normal"
-            >
-              <CalendarIcon className="mr-2" />
-              {dataInicio ? format(dataInicio, "PPP") : "Data Início"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={dataInicio}
-              onSelect={setDataInicio}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-[240px] justify-start text-left font-normal"
-            >
-              <CalendarIcon className="mr-2" />
-              {dataFim ? format(dataFim, "PPP") : "Data Fim"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={dataFim}
-              onSelect={setDataFim}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-
-        <Button onClick={handleFiltrar}>Filtrar</Button>
-      </div>
-
-      <Separator className="my-4" />
-
-      {/* Tabela de Transações */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Histórico de Transações</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {transacoesFiltradas.length === 0 ? (
-            <Alert variant="default">Nenhuma transação encontrada.</Alert>
-          ) : (
+      {/* Lista de Vantagens por Empresa */}
+      {empresas.map((empresa) => (
+        <Card key={empresa.id} className="mb-6">
+          <CardHeader>
+            <CardTitle>{empresa.nome}</CardTitle>
+          </CardHeader>
+          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Data</TableHead>
                   <TableHead>Descrição</TableHead>
-                  <TableHead>Quantidade</TableHead>
+                  <TableHead>Custo (Moedas)</TableHead>
+                  <TableHead>Ação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transacoesFiltradas.map((transacao) => (
-                  <TableRow key={transacao.id}>
+                {empresa.vantagensOferecidas.map((vantagem) => (
+                  <TableRow key={vantagem.id}>
+                    <TableCell>{vantagem.descricao}</TableCell>
+                    <TableCell>{vantagem.custo}</TableCell>
                     <TableCell>
-                      {format(new Date(transacao.data), "dd/MM/yyyy")}
-                    </TableCell>
-                    <TableCell>{transacao.descricao}</TableCell>
-                    <TableCell>
-                      {transacao.quantidade > 0
-                        ? `+${transacao.quantidade}`
-                        : transacao.quantidade}
+                      <Button onClick={() => handleTroca(vantagem.id)}>
+                        Trocar
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          )}
-        </CardContent>
-      </Card>
-
-      <Separator className="my-4" />
-
-      {/* Lista de Vantagens */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Vantagens Disponíveis</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Descrição</TableHead>
-                <TableHead>Custo (Moedas)</TableHead>
-                <TableHead>Ação</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vantagensDisponiveis.map((vantagem) => (
-                <TableRow key={vantagem.id}>
-                  <TableCell>{vantagem.descricao}</TableCell>
-                  <TableCell>{vantagem.custo}</TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleTroca(vantagem.id)}>
-                      Trocar
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      ))}
 
       {/* Alertas */}
       {mensagemAlerta && (
@@ -256,4 +153,4 @@ const MenuAluno: React.FC = () => {
   );
 };
 
-export default MenuAluno;
+export default MenuTroca;

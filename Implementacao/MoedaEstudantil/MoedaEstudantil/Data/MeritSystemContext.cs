@@ -105,6 +105,8 @@ namespace MoedaEstudantil.Data
                 .Property(t => t.TipoTransacao)
                 .HasConversion<int>();
 
+            modelBuilder.Entity<Empresa>()
+                .HasMany(e => e.VantagensOferecidas);
 
             base.OnModelCreating(modelBuilder);
         }

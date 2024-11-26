@@ -24,11 +24,12 @@ namespace MoedaEstudantil.Entities
         [Column(TypeName = "decimal(18, 2)")]
         public required decimal Custo { get; set; }
 
-        public static Vantagem FromDTO(VantagemDTO dto)
+        public static Vantagem FromDTO(VantagemDTO dto, Guid empresaId)
         {
             return new Vantagem
             {
                 Id = Guid.NewGuid(),
+                EmpresaId = empresaId,
                 Nome = dto.Nome,
                 Descricao = dto.Descricao,
                 Custo = dto.Custo

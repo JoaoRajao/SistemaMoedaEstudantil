@@ -1,6 +1,9 @@
-﻿using MoedaEstudantil.Data;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using MoedaEstudantil.Data;
 using MoedaEstudantil.DTOs;
 using MoedaEstudantil.Entities;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MoedaEstudantil.Services
 {
@@ -22,9 +25,11 @@ namespace MoedaEstudantil.Services
             return empresaCadastrada;
         }
 
-        public Empresa ObterEmpresa(Guid id)
+        public Empresa? ObterEmpresa(Guid id)
         {
-            return _context.Empresas.Find(id);
+            return _context.Empresas
+                .Include(e => e.VantagensOferecidas)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public Empresa AtualizarEmpresa(Guid id, Empresa empresaAtualizada)
@@ -53,18 +58,16 @@ namespace MoedaEstudantil.Services
 
         public List<Empresa> ObterTodasEmpresas()
         {
-            return _context.Empresas.ToList();
+            return _context.Empresas
+                .Include(e => e.VantagensOferecidas).ToList();
         }
 
         public Vantagem CadastrarVantagem(VantagemDTO vantagemDto, Guid empresaId)
         {
-            var vantagem = Vantagem.FromDTO(vantagemDto);
+            var vantagem = Vantagem.FromDTO(vantagemDto, empresaId);
             _context.Vantagens.Add(vantagem);
 
-            var empresa = _context.Empresas.Find(empresaId);
-
-            if (empresa == null)
-                throw new Exception("Empresa não encontrada.");
+            var empresa = _context.Empresas.Find(empresaId) ?? throw new Exception("Empresa não encontrada.");
 
             empresa.VantagensOferecidas.Add(vantagem);
 

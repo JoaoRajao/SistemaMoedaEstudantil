@@ -131,8 +131,12 @@ const MenuTroca: React.FC = () => {
                     <TableCell>{vantagem.descricao}</TableCell>
                     <TableCell>{vantagem.custo}</TableCell>
                     <TableCell>
-                      <Button onClick={() => handleTroca(vantagem.id)}>
-                        Trocar
+                      <Button
+                        onClick={() => handleTroca(vantagem.id)}
+                        disabled={saldo < vantagem.custo}
+                        variant={saldo < vantagem.custo ? "outline" : "default"}
+                      >
+                        {saldo < vantagem.custo ? "Saldo Insuficiente" : "Trocar"}
                       </Button>
                     </TableCell>
                   </TableRow>

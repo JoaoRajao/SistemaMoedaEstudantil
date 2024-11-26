@@ -47,7 +47,7 @@ public class Startup
         services.AddScoped<EmpresaService>();
         services.AddScoped<ProfessorService>();
         services.AddScoped<IPessoaService, PessoaService>();
-        services.AddControllers();
+         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
     }

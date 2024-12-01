@@ -46,6 +46,7 @@ namespace MoedaEstudantil.Services
             aluno.Endereco = alunoAtualizado.Endereco;
             aluno.InstituicaoEnsino = alunoAtualizado.InstituicaoEnsino;
             aluno.Curso = alunoAtualizado.Curso;
+            aluno.SaldoMoedas = alunoAtualizado.SaldoMoedas;
 
             _context.SaveChanges();
             return aluno;

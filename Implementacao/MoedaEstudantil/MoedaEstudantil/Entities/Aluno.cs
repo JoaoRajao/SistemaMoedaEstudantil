@@ -38,7 +38,7 @@ namespace MoedaEstudantil.Entities
                 Endereco = alunoDto.Endereco,
                 InstituicaoEnsino = alunoDto.InstituicaoEnsino,
                 Curso = alunoDto.Curso,
-                SaldoMoedas = 0,
+                SaldoMoedas = alunoDto.SaldoMoedas,
                 Transacoes = new List<Transacao>()
             };
         }

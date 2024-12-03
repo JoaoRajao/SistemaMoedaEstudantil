@@ -71,6 +71,10 @@ public class PessoaService : IPessoaService
         _context.Transacoes.Add(transacao);
 
         await _context.SaveChangesAsync();
+
+        var mensagem = $"<p>Voce recebeu a seguinte vantagem: {vantagem.Nome}</p><p>Motivo: {transacao.Mensagem}</p>";
+        await _emailService.EnviarEmailAsync(aluno.Email, "Você recebeu moedas!", mensagem);
+
         return true;
     }
 

@@ -9,5 +9,6 @@ namespace MoedaEstudantil.DTOs
         public required Guid ProfessorId { get; set; }
         public required decimal Valor { get; set; }
         public string Mensagem { get; set; }
+        public string? Email { get; set; }
     }
 }
